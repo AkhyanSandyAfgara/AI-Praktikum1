@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import os
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import LabelEncoder
@@ -9,8 +10,12 @@ st.set_page_config(page_title="KNN Classification", layout="centered")
 
 st.title("🤖 Aplikasi KNN Classification")
 
+# CEK FILE DI FOLDER (biar tidak bingung)
+st.write("📁 Isi folder saat ini:")
+st.write(os.listdir())
+
 # PILIH SUMBER DATA
-option = st.radio("Pilih Sumber Data", ["Upload CSV", "Gunakan Dataset Iris"])
+option = st.radio("Pilih Sumber Data", ["Upload CSV", "Gunakan Dataset Iris (Excel)"])
 
 if option == "Upload CSV":
     uploaded_file = st.file_uploader("Upload Dataset CSV", type=["csv"])
@@ -22,11 +27,11 @@ if option == "Upload CSV":
         st.stop()
 
 else:
-    # PAKAI DATASET IRIS LOKAL
+    # LANGSUNG BACA FILE EXCEL IRIS
     try:
-        df = pd.read_csv("iris.csv")  # pastikan file ada di folder yang sama
+        df = pd.read_excel("Iris.xlsx")  # sesuaikan nama file kamu
     except:
-        st.error("File iris.csv tidak ditemukan!")
+        st.error("File Iris.xlsx tidak ditemukan! Pastikan nama & lokasi benar.")
         st.stop()
 
 # TAMPILKAN DATASET
