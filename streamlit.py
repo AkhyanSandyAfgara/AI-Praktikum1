@@ -29,7 +29,7 @@ if option == "Upload CSV":
 else:
     # LANGSUNG BACA FILE EXCEL IRIS
     try:
-        df = pd.read_excel("Iris.xlsx")  # sesuaikan nama file kamu
+        df = pd.read_excel("Iris.csv")  # sesuaikan nama file kamu
     except:
         st.error("File Iris.xlsx tidak ditemukan! Pastikan nama & lokasi benar.")
         st.stop()
