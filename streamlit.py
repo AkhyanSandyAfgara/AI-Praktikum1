@@ -9,11 +9,12 @@ st.set_page_config(page_title="KNN Classification", layout="centered")
 
 st.title("🤖 Aplikasi KNN Classification")
 
-# LANGSUNG BACA FILE EXCEL
+
+# LANGSUNG BACA FILE CSV
 try:
-    df = pd.read_excel("Iris.xlsx")  # pastikan nama file sama persis
+    df = pd.read_csv("Iris.csv")  # sesuai nama file kamu
 except:
-    st.error("File Iris.xlsx tidak ditemukan! Pastikan ada di folder yang sama.")
+    st.error("File Iris.csv tidak ditemukan! Pastikan ada di folder yang sama.")
     st.stop()
 
 st.write("### Dataset")
