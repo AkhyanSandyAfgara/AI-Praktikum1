@@ -11,9 +11,9 @@ st.title("🤖 Aplikasi KNN Classification")
 
 # LANGSUNG BACA FILE EXCEL
 try:
-    df = pd.read_excel("Iris.csv")  # pastikan nama file sama persis
+    df = pd.read_excel("Iris.xlsx")  # pastikan nama file sama persis
 except:
-    st.error("File Iris.csv tidak ditemukan! Pastikan ada di folder yang sama.")
+    st.error("File Iris.xlsx tidak ditemukan! Pastikan ada di folder yang sama.")
     st.stop()
 
 st.write("### Dataset")
