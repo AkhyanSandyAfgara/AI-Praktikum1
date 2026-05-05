@@ -2,70 +2,83 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestClassifier
 
-st.set_page_config(page_title="KNN Classification", layout="centered")
+# Load dataset (pakai Iris.csv lokal)
+@st.cache_data
+def load_data():
+    df = pd.read_csv("Iris.csv")  # pastikan file ada di folder yang sama
+    return df
 
-st.title("🤖 Aplikasi KNN Classification")
+# Train model
+@st.cache_data
+def train_model(df):
+    X = df.drop("species", axis=1)
+    y = df["species"]
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
 
-# LANGSUNG BACA FILE CSV
-try:
-    df = pd.read_csv("Iris.csv")  # sesuai nama file kamu
-except:
-    st.error("File Iris.csv tidak ditemukan! Pastikan ada di folder yang sama.")
-    st.stop()
+    accuracy = model.score(X_test, y_test)
+    return model, accuracy
 
-st.write("### Dataset")
-st.dataframe(df)
+# Main app
+def main():
+    st.set_page_config(
+        page_title="Klasifikasi Iris dengan Streamlit",
+        layout="centered"
+    )
 
-# PILIH TARGET
-target = st.selectbox("Pilih Kolom Target", df.columns)
+    st.title("🌸 Aplikasi Klasifikasi Bunga Iris")
+    st.write("Masukkan nilai fitur bunga iris:")
 
-if target:
-    X = df.drop(columns=[target])
-    y = df[target]
+    df = load_data()
+    model, accuracy = train_model(df)
 
-    # Encode jika target kategorikal
-    if y.dtype == 'object':
-        le = LabelEncoder()
-        y = le.fit_transform(y)
+    # Input fitur
+    sepal_length = st.slider(
+        "Sepal Length (cm)",
+        float(df.sepal_length.min()),
+        float(df.sepal_length.max()),
+        float(df.sepal_length.mean())
+    )
 
-    # Ambil kolom numerik saja
-    X = X.select_dtypes(include=np.number)
+    sepal_width = st.slider(
+        "Sepal Width (cm)",
+        float(df.sepal_width.min()),
+        float(df.sepal_width.max()),
+        float(df.sepal_width.mean())
+    )
 
-    if X.shape[1] > 0:
-        # Split data
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=42
-        )
+    petal_length = st.slider(
+        "Petal Length (cm)",
+        float(df.petal_length.min()),
+        float(df.petal_length.max()),
+        float(df.petal_length.mean())
+    )
 
-        # Input nilai K
-        k = st.slider("Nilai K (Jumlah Tetangga)", 1, 15, 3)
+    petal_width = st.slider(
+        "Petal Width (cm)",
+        float(df.petal_width.min()),
+        float(df.petal_width.max()),
+        float(df.petal_width.mean())
+    )
 
-        if st.button("Train Model"):
-            model = KNeighborsClassifier(n_neighbors=k)
-            model.fit(X_train, y_train)
+    # Prediksi
+    if st.button("Prediksi"):
+        input_data = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
+        prediction = model.predict(input_data)[0]
 
-            acc = model.score(X_test, y_test)
+        st.success(f"🌼 Prediksi jenis iris: **{prediction}**")
+        st.info(f"Akurasi model: {accuracy*100:.2f}%")
 
-            st.success(f"Akurasi Model: {acc*100:.2f}%")
+    # Tampilkan dataset
+    if st.checkbox("Tampilkan Dataset Iris"):
+        st.dataframe(df)
 
-            st.write("### Prediksi Data Baru")
-
-            input_data = []
-            for col in X.columns:
-                val = st.number_input(
-                    f"Masukkan {col}",
-                    float(X[col].min()),
-                    float(X[col].max())
-                )
-                input_data.append(val)
-
-            if st.button("Prediksi"):
-                prediction = model.predict([input_data])[0]
-
-                st.success(f"Hasil Prediksi: {prediction}")
-    else:
-        st.error("Dataset tidak memiliki kolom numerik!")
+# Run app
+if __name__ == "__main__":
+    main()
