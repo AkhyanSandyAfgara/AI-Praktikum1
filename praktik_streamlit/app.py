@@ -10,7 +10,7 @@ from sklearn.preprocessing import LabelEncoder
 st.set_page_config(page_title="KNN Classification", layout="centered")
 st.title("🤖 KNN Classification (Dataset Kaggle)")
 
-# DOWNLOAD DATASET (sekali saja, lalu cache)
+
 @st.cache_data
 def load_dataset():
     path = kagglehub.dataset_download(
@@ -25,7 +25,7 @@ st.write("📄 Isi folder:")
 files = os.listdir(path)
 st.write(files)
 
-# PILIH FILE CSV DI DALAM DATASET
+
 csv_files = [f for f in files if f.endswith(".csv")]
 
 if not csv_files:
@@ -39,22 +39,22 @@ df = pd.read_csv(os.path.join(path, selected_file))
 st.write("### Dataset")
 st.dataframe(df)
 
-# RAPIIKAN NAMA KOLOM
+
 df.columns = df.columns.str.strip()
 
-# PILIH TARGET
+
 target = st.selectbox("Pilih Kolom Target (Label)", df.columns)
 
 if target:
     X = df.drop(columns=[target])
     y = df[target]
 
-    # Encode target jika kategori
+
     if y.dtype == 'object':
         le = LabelEncoder()
         y = le.fit_transform(y)
 
-    # Ambil fitur numerik saja
+   
     X = X.select_dtypes(include=np.number)
 
     if X.shape[1] > 0:
